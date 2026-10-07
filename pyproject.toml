@@ -1,0 +1,49 @@
+[project]
+name = "ship-or-hold"
+version = "0.1.0"
+description = "Eval regression diagnostic MCP server: is the agent worse, or did the measurement break?"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "mcp[cli]>=1.2.0",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.1",   # Postgres driver: same models run on SQLite (dev) and Postgres (FastMCP Cloud)
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+stats = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+]
+# Optional thin API layer (only if time remains after Phase 12). Not installed by default.
+api = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+]
+
+[tool.uv]
+# `uv sync` alone installs dev + stats: no --extra / --group flags to remember.
+default-groups = ["dev", "stats"]
+# This is an application, not a distributable package.
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
